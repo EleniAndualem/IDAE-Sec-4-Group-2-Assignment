@@ -1,36 +1,42 @@
-# Virtual environment
-venv/
-.venv/
-env/
-
-# Python
+# Byte-compiled / optimized
 __pycache__/
 *.py[cod]
 *$py.class
 *.so
-.Python
-*.egg-info/
-.eggs/
-dist/
-build/
+
+# Virtual environments
+.env
+.venv
+env/
+venv/
+ENV/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
 
 # Jupyter
 .ipynb_checkpoints/
-
-# IDE
-.vscode/
-.idea/
-*.swp
-*.swo
 
 # OS
 .DS_Store
 Thumbs.db
 
-# Environment variables
-.env
-.env.local
-
-# Model artifacts (optional - uncomment if models should not be tracked)
+# Project outputs (keep structure, ignore large generated artifacts if needed)
+# models/*.pkl is tracked after training - uncomment to ignore:
 # models/*.pkl
-# models/*.joblib
+
+# Python packaging
+*.egg-info/
+dist/
+build/
+
+# Logs
+*.log
+
+# Secrets
+.env.local
+*.pem
+credentials.json
