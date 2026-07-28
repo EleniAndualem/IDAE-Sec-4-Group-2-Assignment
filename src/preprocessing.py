@@ -112,3 +112,22 @@ def handle_missing_values(df: pd.DataFrame) -> pd.DataFrame:
         if col in cleaned.columns:
             cleaned[col] = cleaned[col].fillna("unknown")
     return cleaned
+
+
+def create_clean_dataframe(df: pd.DataFrame) -> pd.DataFrame:
+    # Run all cleaning steps
+    cleaned = remove_duplicates(df)
+    cleaned = trim_and_normalize_text(cleaned)
+    cleaned = parse_numeric_fields(cleaned)
+    cleaned = convert_binary_fields(cleaned)
+    cleaned = remove_invalid_values(cleaned)
+    cleaned = handle_missing_values(cleaned)
+    return cleaned
+
+
+if __name__ == "__main__":
+    raw_df = load_data()
+    clean_df = create_clean_dataframe(raw_df)
+    print(f"Raw shape: {raw_df.shape}")
+    print(f"Clean shape: {clean_df.shape}")
+    print(f"Missing values: {clean_df.isnull().sum().sum()}")
