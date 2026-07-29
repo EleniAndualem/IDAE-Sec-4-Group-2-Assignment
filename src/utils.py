@@ -8,13 +8,16 @@ PROJECT_ROOT = Path(__file__).resolve().parent.parent
 DEFAULT_DATA_PATH = PROJECT_ROOT / "data" / "California Housing Prices.csv"
 DEFAULT_REPORT_PATH = PROJECT_ROOT / "outputs" / "reports" / "data_understanding.md"
 FIGURES_DIR = PROJECT_ROOT / "outputs" / "figures"
+METRICS_DIR = PROJECT_ROOT / "outputs" / "metrics"
+REPORTS_DIR = PROJECT_ROOT / "outputs" / "reports"
 TARGET_COLUMN = "median_house_value"
 
 
 def ensure_output_dirs():
     """Ensure output directories exist."""
     FIGURES_DIR.mkdir(parents=True, exist_ok=True)
-    DEFAULT_REPORT_PATH.parent.mkdir(parents=True, exist_ok=True)
+    METRICS_DIR.mkdir(parents=True, exist_ok=True)
+    REPORTS_DIR.mkdir(parents=True, exist_ok=True)
 
 
 def load_data(csv_path: Path | str = DEFAULT_DATA_PATH) -> pd.DataFrame:
@@ -106,6 +109,14 @@ def save_data_understanding_report(
     output = Path(output_path)
     output.parent.mkdir(parents=True, exist_ok=True)
     output.write_text(report, encoding="utf-8")
+    return output
+
+
+def save_markdown(content: str, path: Path | str) -> Path:
+    # Write markdown string to a file
+    output = Path(path)
+    output.parent.mkdir(parents=True, exist_ok=True)
+    output.write_text(content, encoding="utf-8")
     return output
 
 
