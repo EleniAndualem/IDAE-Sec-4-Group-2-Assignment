@@ -34,7 +34,7 @@ def remove_duplicates(df: pd.DataFrame) -> pd.DataFrame:
 def trim_and_normalize_text(df: pd.DataFrame) -> pd.DataFrame:
     # Clean text columns
     cleaned = df.copy()
-    for col in cleaned.select_dtypes(include=["object", "str"]).columns:
+    for col in cleaned.select_dtypes(include=["object", "string"]).columns:
         cleaned[col] = (
             cleaned[col]
             .astype(str)

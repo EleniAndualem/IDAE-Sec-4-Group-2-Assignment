@@ -18,7 +18,7 @@
 | households | float64 | 0 |
 | median_income | float64 | 0 |
 | median_house_value | float64 | 0 |
-| ocean_proximity | str | 0 |
+| ocean_proximity | object | 0 |
 
 ## Numeric Statistics
 

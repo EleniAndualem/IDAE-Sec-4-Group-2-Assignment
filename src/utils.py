@@ -7,6 +7,14 @@ import pandas as pd
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 DEFAULT_DATA_PATH = PROJECT_ROOT / "data" / "California Housing Prices.csv"
 DEFAULT_REPORT_PATH = PROJECT_ROOT / "outputs" / "reports" / "data_understanding.md"
+FIGURES_DIR = PROJECT_ROOT / "outputs" / "figures"
+TARGET_COLUMN = "median_house_value"
+
+
+def ensure_output_dirs():
+    """Ensure output directories exist."""
+    FIGURES_DIR.mkdir(parents=True, exist_ok=True)
+    DEFAULT_REPORT_PATH.parent.mkdir(parents=True, exist_ok=True)
 
 
 def load_data(csv_path: Path | str = DEFAULT_DATA_PATH) -> pd.DataFrame:
@@ -33,7 +41,7 @@ def descriptive_statistics(df: pd.DataFrame) -> dict:
     numeric_stats = df.describe().to_dict()
     categorical_stats = {
         col: df[col].value_counts().to_dict()
-        for col in df.select_dtypes(include=["object", "str"]).columns
+        for col in df.select_dtypes(include=["object", "string"]).columns
     }
     return {"numeric": numeric_stats, "categorical": categorical_stats}
 
