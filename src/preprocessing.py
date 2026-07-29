@@ -1,6 +1,12 @@
 # Clean raw housing data
 
 import pandas as pd
+import numpy as np
+
+from sklearn.compose import ColumnTransformer
+from sklearn.impute import SimpleImputer
+from sklearn.pipeline import Pipeline
+from sklearn.preprocessing import OneHotEncoder, StandardScaler
 
 from src.utils import DEFAULT_DATA_PATH, load_data
 
@@ -76,6 +82,31 @@ def convert_binary_fields(df: pd.DataFrame) -> pd.DataFrame:
             )
     return cleaned
 
+def build_preprocessor(numeric_features : list[str], categorical_features : list[str], scale_numeric : bool = True) -> ColumnTransformer:
+    # Build sklearn ColumnTransformer with imputation, scaling, and one-hot encoding
+    numeric_steps: list[tuple[str, object]] = [("imputer", SimpleImputer(strategy="median"))]
+    if scale_numeric:
+        numeric_steps.append(("scaler", StandardScaler()))
+
+    numeric_pipeline = Pipeline(steps = numeric_steps)
+    
+    categorical_pipeline = Pipeline(
+        steps=[
+            ("imputer", SimpleImputer(strategy="constant", fill_value="unknown")),
+            (
+                "encoder",
+                OneHotEncoder(handle_unknown="ignore", sparse_output=False),
+            ),
+        ]
+    )
+
+    transformers: list[tuple[str, Pipeline, list[str]]] = []
+    if numeric_features:
+        transformers.append(("num", numeric_pipeline, numeric_features))
+    if categorical_features:
+        transformers.append(("cat", categorical_pipeline, categorical_features))
+
+    return ColumnTransformer(transformers=transformers, remainder="drop")
 
 def remove_invalid_values(df: pd.DataFrame) -> pd.DataFrame:
     # Drop rows with bad values
