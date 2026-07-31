@@ -10,6 +10,7 @@ DEFAULT_REPORT_PATH = PROJECT_ROOT / "outputs" / "reports" / "data_understanding
 FIGURES_DIR = PROJECT_ROOT / "outputs" / "figures"
 METRICS_DIR = PROJECT_ROOT / "outputs" / "metrics"
 REPORTS_DIR = PROJECT_ROOT / "outputs" / "reports"
+MODELS_DIR = PROJECT_ROOT / "models"
 TARGET_COLUMN = "median_house_value"
 
 
@@ -18,6 +19,7 @@ def ensure_output_dirs():
     FIGURES_DIR.mkdir(parents=True, exist_ok=True)
     METRICS_DIR.mkdir(parents=True, exist_ok=True)
     REPORTS_DIR.mkdir(parents=True, exist_ok=True)
+    MODELS_DIR.mkdir(parents=True, exist_ok=True)
 
 
 def load_data(csv_path: Path | str = DEFAULT_DATA_PATH) -> pd.DataFrame:
