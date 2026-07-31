@@ -26,7 +26,7 @@ Thumbs.db
 
 # Project outputs (keep structure, ignore large generated artifacts if needed)
 # models/*.pkl is tracked after training - uncomment to ignore:
-# models/*.pkl
+models/*.pkl
 
 # Python packaging
 *.egg-info/

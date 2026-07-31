@@ -11,8 +11,17 @@ import pandas as pd
 from sklearn.base import clone
 from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
 from sklearn.model_selection import KFold, cross_val_score, learning_curve
+import joblib
+import json
 
-from src.utils import METRICS_DIR, REPORTS_DIR, ensure_output_dirs, save_markdown
+from src.utils import (
+    METRICS_DIR,
+    REPORTS_DIR,
+    MODELS_DIR,
+    TARGET_COLUMN,
+    ensure_output_dirs,
+    save_markdown,
+)
 
 
 def compute_regression_metrics(
@@ -224,6 +233,35 @@ def generate_comparison_report(metrics_df: pd.DataFrame, best_model: str) -> str
     return content
 
 
+def save_best_model(
+    results_dict: dict[str, Any],
+    best_model_name: str,
+    feature_names: list[str],
+) -> Path:
+    """Save the best model and metadata to models/."""
+    ensure_output_dirs()
+    # The pipeline is stored under the "pipeline" key in the results dict
+    model = results_dict[best_model_name]["pipeline"]
+    model_path = MODELS_DIR / "best_model.pkl"
+
+    metadata = {
+        "model_name": best_model_name,
+        "target_column": TARGET_COLUMN,
+        "features": feature_names,
+    }
+
+    # Save as models/best_model.pkl with Joblib
+    joblib.dump(model, model_path)
+    
+    # Save feature metadata to models/feature_info.json (as per project guide)
+    feature_info_path = MODELS_DIR / "feature_info.json"
+    with open(feature_info_path, "w", encoding="utf-8") as f:
+        json.dump(metadata, f, indent=4)
+        
+    print(f"Best model ({best_model_name}) saved to {model_path}")
+    return model_path
+
+
 if __name__ == "__main__":
     from src.train import run_training_pipeline
     from src.visualization import plot_model_comparison, plot_leaderboard
@@ -257,6 +295,9 @@ if __name__ == "__main__":
     # 4. Compare and select best model (Step 9)
     best_model = select_best_model(metrics_df)
     print(f"Selected Best Model: {best_model}")
+
+    # 4b. Save the best model (Step 10)
+    save_best_model(results, best_model, X_train.columns.tolist())
 
     # 5. Generate report and visualizations (Step 9)
     generate_comparison_report(metrics_df, best_model)
