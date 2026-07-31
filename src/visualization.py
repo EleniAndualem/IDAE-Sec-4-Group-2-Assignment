@@ -121,6 +121,51 @@ def plot_avg_value_by_ocean_proximity(df: pd.DataFrame) -> Path:
 
 # --- Model Evaluation Plots (Agnostic) ---
 
+TREE_MODEL_KEYWORDS = ("tree", "forest", "boosting")
+LINEAR_MODEL_KEYWORDS = ("regression", "lasso", "ridge")
+
+
+def get_transformed_feature_names(pipeline: Any, X: pd.DataFrame) -> list[str]:
+    # Get feature names after preprocessing
+    preprocessor = pipeline.named_steps["preprocessor"]
+    return list(preprocessor.get_feature_names_out())
+
+
+def _is_tree_model(model_name: str, pipeline: Any) -> bool:
+    estimator = pipeline.named_steps.get("regressor", pipeline)
+    return hasattr(estimator, "feature_importances_") or any(
+        key in model_name.lower() for key in TREE_MODEL_KEYWORDS
+    )
+
+
+def _is_linear_model(model_name: str, pipeline: Any) -> bool:
+    estimator = pipeline.named_steps.get("regressor", pipeline)
+    return hasattr(estimator, "coef_") and any(
+        key in model_name.lower() for key in LINEAR_MODEL_KEYWORDS
+    )
+
+
+def generate_feature_importance_plots(
+    results: dict[str, dict],
+    X_train: pd.DataFrame,
+) -> list[Path]:
+    # Tree models → importance plots, linear models → coefficient plots
+    paths: list[Path] = []
+    for name, info in results.items():
+        pipeline = info["pipeline"]
+        feature_names = get_transformed_feature_names(pipeline, X_train)
+
+        if _is_tree_model(name, pipeline):
+            path = plot_feature_importance(pipeline, feature_names, name)
+            if path:
+                paths.append(path)
+        elif _is_linear_model(name, pipeline):
+            path = plot_coefficients(pipeline, feature_names, name)
+            if path:
+                paths.append(path)
+    return paths
+
+
 def plot_model_comparison(metrics_df: pd.DataFrame) -> Path:
     """Bar chart comparing model RMSE."""
     plt.figure(figsize=(12, 6))

@@ -264,7 +264,7 @@ def save_best_model(
 
 if __name__ == "__main__":
     from src.train import run_training_pipeline
-    from src.visualization import plot_model_comparison, plot_leaderboard
+    from src.visualization import generate_feature_importance_plots, plot_leaderboard, plot_model_comparison
 
     # 1. Train models and get data
     print("Running training pipeline to get models for evaluation...")
@@ -306,3 +306,8 @@ if __name__ == "__main__":
     plot_model_comparison(metrics_df)
     plot_leaderboard(metrics_df)
     print("Generated model comparison visualizations.")
+
+    # 6. Feature importance / coefficients (Step 11)
+    print("\nGenerating feature importance and coefficient plots...")
+    importance_paths = generate_feature_importance_plots(results, X_train)
+    print(f"Saved {len(importance_paths)} importance/coefficient plots.")
