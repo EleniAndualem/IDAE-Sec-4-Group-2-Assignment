@@ -262,9 +262,52 @@ def save_best_model(
     return model_path
 
 
+def save_cross_validation_results(cv_results: dict[str, dict[str, Any]]) -> Path:
+    # Save 5-fold CV scores to JSON
+    ensure_output_dirs()
+    path = METRICS_DIR / "cross_validation.json"
+    with open(path, "w", encoding="utf-8") as f:
+        json.dump(cv_results, f, indent=4)
+    return path
+
+
+def run_all_cross_validation(
+    results: dict[str, dict],
+    X_train: pd.DataFrame,
+    y_train: pd.Series,
+    n_splits: int = 5,
+) -> dict[str, dict[str, Any]]:
+    # Run 5-fold CV for every trained model
+    cv_results: dict[str, dict[str, Any]] = {}
+    for name, info in results.items():
+        print(f"  Cross-validating {name}...")
+        cv_results[name] = run_cross_validation(
+            info["pipeline"], X_train, y_train, n_splits=n_splits
+        )
+    return cv_results
+
+
+def compute_all_learning_curves(
+    results: dict[str, dict],
+    X_train: pd.DataFrame,
+    y_train: pd.Series,
+) -> dict[str, dict[str, list[float]]]:
+    # Learning curve data for each model
+    curve_data: dict[str, dict[str, list[float]]] = {}
+    for name, info in results.items():
+        print(f"  Learning curve for {name}...")
+        curve_data[name] = compute_learning_curve_data(info["pipeline"], X_train, y_train)
+    return curve_data
+
+
 if __name__ == "__main__":
     from src.train import run_training_pipeline
-    from src.visualization import generate_feature_importance_plots, plot_leaderboard, plot_model_comparison
+    from src.visualization import (
+        generate_bonus_plots,
+        generate_feature_importance_plots,
+        plot_leaderboard,
+        plot_model_comparison,
+    )
 
     # 1. Train models and get data
     print("Running training pipeline to get models for evaluation...")
@@ -311,3 +354,18 @@ if __name__ == "__main__":
     print("\nGenerating feature importance and coefficient plots...")
     importance_paths = generate_feature_importance_plots(results, X_train)
     print(f"Saved {len(importance_paths)} importance/coefficient plots.")
+
+    # 7. Bonus analysis (Step 12)
+    print("\nRunning 5-fold cross-validation...")
+    cv_results = run_all_cross_validation(results, X_train, y_train)
+    cv_path = save_cross_validation_results(cv_results)
+    print(f"Saved cross-validation results to {cv_path}")
+
+    print("\nComputing learning curves...")
+    learning_curve_data = compute_all_learning_curves(results, X_train, y_train)
+
+    print("\nGenerating residual, prediction, and learning curve plots...")
+    bonus_paths = generate_bonus_plots(
+        results, X_train, X_test, y_test, learning_curve_data
+    )
+    print(f"Saved {len(bonus_paths)} bonus analysis plots.")

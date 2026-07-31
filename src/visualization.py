@@ -166,6 +166,29 @@ def generate_feature_importance_plots(
     return paths
 
 
+def generate_bonus_plots(
+    results: dict[str, dict],
+    X_train: pd.DataFrame,
+    X_test: pd.DataFrame,
+    y_test: pd.Series,
+    learning_curve_data: dict[str, dict[str, list[float]]],
+) -> list[Path]:
+    # Residuals, predicted vs actual, and learning curves per model
+    paths: list[Path] = []
+    y_true = y_test.values
+
+    for name, info in results.items():
+        pipeline = info["pipeline"]
+        y_pred = pipeline.predict(X_test)
+        paths.append(plot_residuals(y_true, y_pred, name))
+        paths.append(plot_prediction_vs_actual(y_true, y_pred, name))
+
+        if name in learning_curve_data:
+            paths.append(plot_learning_curve(learning_curve_data[name], name))
+
+    return paths
+
+
 def plot_model_comparison(metrics_df: pd.DataFrame) -> Path:
     """Bar chart comparing model RMSE."""
     plt.figure(figsize=(12, 6))
