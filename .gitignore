@@ -24,8 +24,7 @@ ENV/
 .DS_Store
 Thumbs.db
 
-# Project outputs (keep structure, ignore large generated artifacts if needed)
-# models/*.pkl is tracked after training - uncomment to ignore:
+# Trained model artifacts (regenerate with: python -m src.evaluate)
 models/*.pkl
 
 # Python packaging

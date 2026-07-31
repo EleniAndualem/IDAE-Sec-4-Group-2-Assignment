@@ -30,8 +30,20 @@ MODEL_CONFIGS: dict[str, tuple[object, bool]] = {
     "Ridge Regression": (Ridge(alpha=1.0, random_state=RANDOM_STATE), True),
     "Lasso Regression": (Lasso(alpha=0.1, random_state=RANDOM_STATE), True),
     "Decision Tree": (DecisionTreeRegressor(random_state=RANDOM_STATE), False),
-    "Random Forest": (RandomForestRegressor(n_estimators=100, random_state=RANDOM_STATE), False),
-    "Gradient Boosting": (GradientBoostingRegressor(n_estimators=100, random_state=RANDOM_STATE), False),
+    "Random Forest": (
+        RandomForestRegressor(
+            n_estimators=30,
+            max_depth=20,
+            min_samples_leaf=5,
+            random_state=RANDOM_STATE,
+            n_jobs=-1,
+        ),
+        False,
+    ),
+    "Gradient Boosting": (
+        GradientBoostingRegressor(n_estimators=50, max_depth=5, random_state=RANDOM_STATE),
+        False,
+    ),
     "SVR": (SVR(kernel="rbf"), True),
 }
 

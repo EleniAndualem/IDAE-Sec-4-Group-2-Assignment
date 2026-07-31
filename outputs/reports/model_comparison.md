@@ -14,14 +14,14 @@ The best model is selected using a composite score that weights:
 
 | Rank | Model | RMSE | MAE | R² | Train Time (s) | Predict Time (s) |
 |------|-------|------|-----|----|----------------|------------------|
-| 1 | Random Forest ⭐ | $49,417 | $32,203 | 0.8136 | 7.411 | 0.0705 |
-| 2 | Gradient Boosting | $56,467 | $38,765 | 0.7567 | 2.346 | 0.0070 |
-| 3 | Decision Tree | $67,437 | $42,981 | 0.6530 | 0.195 | 0.0033 |
-| 4 | Linear Regression | $69,944 | $50,498 | 0.6267 | 0.018 | 0.0032 |
-| 5 | Lasso Regression | $69,944 | $50,498 | 0.6267 | 0.239 | 0.0026 |
-| 6 | Ridge Regression | $69,951 | $50,504 | 0.6266 | 0.027 | 0.0024 |
-| 7 | SVR | $116,845 | $86,969 | -0.0419 | 5.636 | 2.1562 |
+| 1 | Random Forest ⭐ | $50,476 | $32,960 | 0.8056 | 1.533 | 0.0720 |
+| 2 | Gradient Boosting | $54,380 | $37,041 | 0.7743 | 6.741 | 0.0368 |
+| 3 | Decision Tree | $67,437 | $42,981 | 0.6530 | 0.552 | 0.0317 |
+| 4 | Linear Regression | $69,944 | $50,498 | 0.6267 | 0.218 | 0.0341 |
+| 5 | Lasso Regression | $69,944 | $50,498 | 0.6267 | 10.838 | 0.0280 |
+| 6 | Ridge Regression | $69,951 | $50,504 | 0.6266 | 0.099 | 0.0382 |
+| 7 | SVR | $116,845 | $86,969 | -0.0419 | 30.367 | 16.7617 |
 
 ## Summary
 
-The **Random Forest** model achieved the best balance of accuracy (RMSE=$49,417, MAE=$32,203, R²=0.8136) and training efficiency among all evaluated algorithms.
+The **Random Forest** model achieved the best balance of accuracy (RMSE=$50,476, MAE=$32,960, R²=0.8056) and training efficiency among all evaluated algorithms.
