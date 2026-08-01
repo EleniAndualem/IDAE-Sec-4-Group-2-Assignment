@@ -8,7 +8,7 @@ from sklearn.impute import SimpleImputer
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import OneHotEncoder, StandardScaler
 
-from src.utils import DEFAULT_DATA_PATH, load_data
+from utils import DEFAULT_DATA_PATH, load_data
 
 TARGET_COLUMN = "median_house_value"
 NUMERIC_COLUMNS = [
