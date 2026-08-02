@@ -14,7 +14,7 @@ from sklearn.model_selection import KFold, cross_val_score, learning_curve
 import joblib
 import json
 
-from utils import (
+from src.utils import (
     METRICS_DIR,
     REPORTS_DIR,
     MODELS_DIR,
@@ -301,8 +301,8 @@ def compute_all_learning_curves(
 
 
 if __name__ == "__main__":
-    from train import run_training_pipeline
-    from visualization import (
+    from src.train import run_training_pipeline
+    from src.visualization import (
         generate_bonus_plots,
         generate_feature_importance_plots,
         plot_leaderboard,

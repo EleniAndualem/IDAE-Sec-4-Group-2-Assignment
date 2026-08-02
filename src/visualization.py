@@ -11,7 +11,7 @@ import pandas as pd
 import seaborn as sns
 from sklearn.inspection import permutation_importance
 
-from utils import FIGURES_DIR, TARGET_COLUMN, ensure_output_dirs
+from src.utils import FIGURES_DIR, TARGET_COLUMN, ensure_output_dirs
 
 sns.set_theme(style="whitegrid", palette="muted")
 plt.rcParams["figure.figsize"] = (10, 6)
