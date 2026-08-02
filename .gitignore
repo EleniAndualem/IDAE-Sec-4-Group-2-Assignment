@@ -24,7 +24,6 @@ ENV/
 .DS_Store
 Thumbs.db
 
-
 # Python packaging
 *.egg-info/
 dist/

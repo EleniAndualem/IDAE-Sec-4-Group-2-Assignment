@@ -11,15 +11,15 @@ from sklearn.pipeline import Pipeline
 from sklearn.svm import SVR
 from sklearn.tree import DecisionTreeRegressor
 
-from src.feature_engineering import engineer_features
-from src.preprocessing import (
+from feature_engineering import engineer_features
+from preprocessing import (
     CATEGORICAL_COLUMNS,
     NUMERIC_COLUMNS,
     TARGET_COLUMN,
     build_preprocessor,
     create_clean_dataframe,
 )
-from src.utils import load_data
+from utils import load_data
 
 TEST_SIZE = 0.2
 RANDOM_STATE = 42

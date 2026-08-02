@@ -34,8 +34,8 @@ def list_engineered_features() -> list[str]:
 
 
 if __name__ == "__main__":
-    from src.preprocessing import create_clean_dataframe
-    from src.utils import load_data
+    from preprocessing import create_clean_dataframe
+    from utils import load_data
 
     clean_df = create_clean_dataframe(load_data())
     featured_df = engineer_features(clean_df)
