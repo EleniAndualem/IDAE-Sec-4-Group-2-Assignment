@@ -1,5 +1,0 @@
--r requirements.txt
-jupyter>=1.0.0
-ipykernel>=6.29.0
-pytest>=8.0.0
-shap>=0.44.0

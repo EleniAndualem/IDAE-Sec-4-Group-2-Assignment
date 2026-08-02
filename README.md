@@ -71,8 +71,7 @@ This project builds a supervised regression system that estimates `median_house_
 │   └── visualization.py    # Plot generation
 ├── tests/                  # Unit tests (pytest)
 ├── Dockerfile              # Container deployment
-├── requirements.txt        # Production dependencies
-└── requirements-dev.txt    # Dev, test, and SHAP dependencies
+├── requirements.txt        # All project dependencies
 ```
 
 ## Quick Start
@@ -87,7 +86,6 @@ python -m venv .venv
 ```powershell
 .\.venv\Scripts\Activate.ps1
 pip install -r requirements.txt
-pip install -r requirements-dev.txt   # optional: tests, notebooks, SHAP
 $env:PYTHONPATH="."
 streamlit run app/app.py
 ```
@@ -96,7 +94,6 @@ streamlit run app/app.py
 ```bash
 source .venv/bin/activate
 pip install -r requirements.txt
-pip install -r requirements-dev.txt   # optional
 PYTHONPATH=. streamlit run app/app.py
 ```
 
@@ -136,7 +133,7 @@ Six pages: **Home** · **Predict** · **Model Comparison** · **EDA** · **Model
 - Composite model leaderboard with weighting formula
 - EDA and evaluation charts with written interpretations
 - Feature importance, learning curves, residuals, and cross-validation
-- SHAP explainability on predictions (requires `requirements-dev.txt`)
+- SHAP explainability on predictions
 
 ## Documentation
 
