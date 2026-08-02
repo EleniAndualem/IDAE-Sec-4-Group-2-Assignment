@@ -133,7 +133,6 @@ Six pages: **Home** · **Predict** · **Model Comparison** · **EDA** · **Model
 - Composite model leaderboard with weighting formula
 - EDA and evaluation charts with written interpretations
 - Feature importance, learning curves, residuals, and cross-validation
-- SHAP explainability on predictions
 
 ## Documentation
 

@@ -324,36 +324,55 @@ def page_home():
 
 
 def page_predict():
-    hero("Make a Prediction", "Enter property details to estimate median house value")
+    hero("Make a Prediction", "Enter block-group details — engineered features are calculated automatically")
     model, feature_info = load_model_artifacts()
     feature_names = feature_info["features"]
+
+    info_card(
+        "How it works",
+        "You enter <strong>9 raw inputs</strong> below. The app then computes "
+        "<code>houseAgeLabel</code> (from housing age) and <code>valuePerRoom</code> "
+        "(from income and rooms) before calling the model — same as in training.",
+    )
 
     with st.form("prediction_form"):
         col1, col2 = st.columns(2)
         with col1:
             longitude = st.number_input("Longitude", value=-118.0, format="%.4f")
             latitude = st.number_input("Latitude", value=34.0, format="%.4f")
-            housing_median_age = st.number_input("Housing Median Age", value=28.0, min_value=1.0)
-            total_rooms = st.number_input("Total Rooms", value=2000.0, min_value=1.0)
-            total_bedrooms = st.number_input("Total Bedrooms", value=400.0, min_value=1.0)
+            housing_median_age = st.number_input(
+                "Housing Median Age (years)", value=28, min_value=1, step=1, format="%d",
+            )
+            total_rooms = st.number_input(
+                "Total Rooms", value=2000, min_value=1, step=1, format="%d",
+            )
+            total_bedrooms = st.number_input(
+                "Total Bedrooms", value=400, min_value=1, step=1, format="%d",
+            )
         with col2:
-            population = st.number_input("Population", value=1200.0, min_value=1.0)
-            households = st.number_input("Households", value=400.0, min_value=1.0)
-            median_income = st.number_input("Median Income (×$10k)", value=3.5, min_value=0.1)
+            population = st.number_input(
+                "Population", value=1200, min_value=1, step=1, format="%d",
+            )
+            households = st.number_input(
+                "Households", value=400, min_value=1, step=1, format="%d",
+            )
+            median_income = st.number_input(
+                "Median Income (×$10k)", value=3.5, min_value=0.1, format="%.2f",
+            )
             ocean_proximity = st.selectbox("Ocean Proximity", OCEAN_OPTIONS)
 
         submitted = st.form_submit_button("Predict Price", type="primary", use_container_width=True)
 
     if submitted:
         input_df = pd.DataFrame([{
-            "longitude": longitude,
-            "latitude": latitude,
-            "housing_median_age": housing_median_age,
-            "total_rooms": total_rooms,
-            "total_bedrooms": total_bedrooms,
-            "population": population,
-            "households": households,
-            "median_income": median_income,
+            "longitude": float(longitude),
+            "latitude": float(latitude),
+            "housing_median_age": int(housing_median_age),
+            "total_rooms": int(total_rooms),
+            "total_bedrooms": int(total_bedrooms),
+            "population": int(population),
+            "households": int(households),
+            "median_income": float(median_income),
             "ocean_proximity": ocean_proximity,
         }])
         featured = engineer_features(input_df)
@@ -366,19 +385,26 @@ def page_predict():
             unsafe_allow_html=True,
         )
 
+        age_label = featured["houseAgeLabel"].iloc[0]
+        vpr = featured["valuePerRoom"].iloc[0]
+        info_card(
+            "Auto-engineered features",
+            f"<code>houseAgeLabel</code> = <strong>{age_label}</strong> "
+            f"(from age {int(housing_median_age)} years) · "
+            f"<code>valuePerRoom</code> = <strong>{vpr:.4f}</strong> "
+            f"(from income and rooms per household)",
+        )
+
         st.session_state.prediction_history.insert(0, {
             "Predicted Price": f"${prediction:,.0f}",
             "Median Income": median_income,
             "Ocean Proximity": ocean_proximity,
-            "Housing Age": housing_median_age,
+            "Housing Age": int(housing_median_age),
+            "Age Label": age_label,
+            "Value/Room": f"{vpr:.4f}",
             "Latitude": latitude,
             "Longitude": longitude,
         })
-
-        with st.expander("Engineered features sent to the model"):
-            st.dataframe(featured[feature_names], use_container_width=True)
-
-        _render_shap_waterfall(model, featured[feature_names])
 
     if st.session_state.prediction_history:
         st.markdown("### Prediction History")
@@ -386,47 +412,6 @@ def page_predict():
         if st.button("Clear history"):
             st.session_state.prediction_history = []
             st.rerun()
-
-
-def _render_shap_waterfall(model, X: pd.DataFrame) -> None:
-    try:
-        import matplotlib.pyplot as plt
-        import shap
-
-        preprocessor = model.named_steps["preprocessor"]
-        regressor = model.named_steps["regressor"]
-        X_t = preprocessor.transform(X)
-        names = list(preprocessor.get_feature_names_out())
-
-        with st.expander("SHAP Explainability (Bonus)", expanded=False):
-            st.caption("Shows how each feature pushed this specific prediction up or down.")
-            if not hasattr(regressor, "feature_importances_"):
-                st.info("SHAP is most informative for the tree-based best model (Random Forest).")
-                return
-
-            explainer = shap.TreeExplainer(regressor)
-            shap_values = explainer.shap_values(X_t)
-            fig = plt.figure(figsize=(9, 4))
-            shap.waterfall_plot(
-                shap.Explanation(
-                    values=shap_values[0],
-                    base_values=explainer.expected_value,
-                    data=X_t[0],
-                    feature_names=names,
-                ),
-                show=False,
-            )
-            st.pyplot(fig)
-            plt.close(fig)
-            info_card(
-                "Interpretation",
-                "Green bars increase the predicted price; red bars decrease it. Features with the "
-                "largest absolute SHAP values had the strongest impact on this prediction.",
-            )
-    except ImportError:
-        st.caption("Install SHAP for local explainability: `pip install shap`")
-    except Exception as exc:
-        st.caption(f"SHAP plot skipped: {exc}")
 
 
 def page_model_comparison():
@@ -578,7 +563,7 @@ def page_about():
     )
     about_section(
         "Tech Stack",
-        "<p>Python · pandas · NumPy · scikit-learn · Streamlit · matplotlib · seaborn · joblib · pytest · SHAP</p>",
+        "<p>Python · pandas · NumPy · scikit-learn · Streamlit · matplotlib · seaborn · joblib · pytest</p>",
     )
     about_section(
         "What This App Does",
@@ -593,7 +578,7 @@ def page_about():
         "cleaning missing values, engineering meaningful features, training and comparing seven regression models, "
         "selecting the best one with a weighted composite score, and packaging everything into an interactive Streamlit app. "
         "We gained hands-on experience with sklearn Pipelines, model evaluation metrics, visualization, and making "
-        "ML results understandable to non-technical users through chart interpretations and SHAP explainability.</p>",
+        "ML results understandable to non-technical users through chart interpretations.</p>",
     )
     about_section(
         "Project Completed",
