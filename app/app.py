@@ -313,7 +313,7 @@ def page_home():
 
     with col_b:
         st.markdown("### Model Information")
-        info_card("Selected Model", f"**{best_name}** — chosen by composite score (RMSE, MAE, R², speed).")
+        info_card("Selected Model", f"{best_name} — chosen by composite score (RMSE, MAE, R², speed).")
         info_card("Engineered Features", "`houseAgeLabel` (age category), `valuePerRoom` (rooms per household).")
         if best_row is not None:
             info_card(
