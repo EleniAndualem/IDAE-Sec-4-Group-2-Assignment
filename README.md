@@ -65,6 +65,12 @@ source .venv/bin/activate
 pip install -r requirements.txt
 ```
 
+For notebooks, tests, and SHAP explainability:
+
+```bash
+pip install -r requirements-dev.txt
+```
+
 ## Usage Commands
 
 Run from project root:
@@ -85,6 +91,26 @@ PYTHONPATH=. pytest tests/ -v
 # Launch Streamlit app
 streamlit run app/app.py
 ```
+
+## Deploy Live (Streamlit Community Cloud)
+
+1. Push this repo to GitHub (model, data, and figures must be in the repo).
+2. Go to [share.streamlit.io](https://share.streamlit.io) and sign in with GitHub.
+3. **Create app** → repository: `EleniAndualem/IDAE-Sec-4-Group-2-Assignment`, branch: `main`, main file: `app/app.py`.
+4. Deploy. You get a public URL like `https://your-app-name.streamlit.app`.
+
+Every push to `main` redeploys automatically.
+
+## Deploy with Docker
+
+From the project root:
+
+```bash
+docker build -t ca-housing-app .
+docker run -p 8501:8501 ca-housing-app
+```
+
+Open [http://localhost:8501](http://localhost:8501).
 
 ## Model Comparison Results
 
