@@ -73,6 +73,201 @@ FIGURE_INSIGHTS: dict[str, dict[str, str]] = {
             "Lower composite score wins — Random Forest ranks best overall."
         ),
     },
+    # --- Model Analysis: Feature Importance (tree models) ---
+    "feature_importance_random_forest.png": {
+        "title": "Feature Importance — Random Forest",
+        "interpretation": (
+            "median_income and location (latitude, longitude) drive most splits — coastal and Bay Area "
+            "blocks cost more. valuePerRoom and ocean_proximity add signal beyond raw counts, matching "
+            "our best test performance (R² 0.806, RMSE $50,476)."
+        ),
+    },
+    "feature_importance_decision_tree.png": {
+        "title": "Feature Importance — Decision Tree",
+        "interpretation": (
+            "Same top drivers as Random Forest (income, location), but a single tree over-relies on "
+            "a few splits. Test R² 0.653 — useful features, weaker generalization than the ensemble."
+        ),
+    },
+    "feature_importance_gradient_boosting.png": {
+        "title": "Feature Importance — Gradient Boosting",
+        "interpretation": (
+            "Income and location lead; later trees refine mid-range price errors. Strong second place "
+            "(R² 0.774, RMSE $54,380) but slightly less stable than Random Forest across CV folds."
+        ),
+    },
+    # --- Model Analysis: Linear Coefficients ---
+    "coefficients_linear_regression.png": {
+        "title": "Linear Coefficients — Linear Regression",
+        "interpretation": (
+            "median_income has the largest positive effect on price; coastal ocean_proximity categories "
+            "are positive, inland lower. RMSE ~$69,944 — linear weights miss non-linear location effects."
+        ),
+    },
+    "coefficients_ridge_regression.png": {
+        "title": "Linear Coefficients — Ridge Regression",
+        "interpretation": (
+            "Nearly identical to Linear Regression (RMSE $69,951). L2 regularization slightly shrinks "
+            "large coefficients but does not fix the model's limited flexibility on housing data."
+        ),
+    },
+    "coefficients_lasso_regression.png": {
+        "title": "Linear Coefficients — Lasso Regression",
+        "interpretation": (
+            "Same pattern as Linear/Ridge (RMSE $69,944). L1 penalty barely zeros features — most "
+            "inputs remain useful, so Lasso offers little advantage here."
+        ),
+    },
+    # --- Model Analysis: Learning Curves ---
+    "learning_curve_random_forest.png": {
+        "title": "Learning Curve — Random Forest",
+        "interpretation": (
+            "Validation R² climbs to ~0.80 with a small train–val gap. The model generalizes well; "
+            "the curve flattens near 100% data, so more rows would help only marginally."
+        ),
+    },
+    "learning_curve_gradient_boosting.png": {
+        "title": "Learning Curve — Gradient Boosting",
+        "interpretation": (
+            "Validation R² reaches ~0.77–0.78. Train score stays above validation — mild overfitting "
+            "at larger sample sizes, but still a strong performer."
+        ),
+    },
+    "learning_curve_decision_tree.png": {
+        "title": "Learning Curve — Decision Tree",
+        "interpretation": (
+            "Train R² stays high while validation lags — classic overfitting. A single tree memorizes "
+            "training noise; ensemble methods (RF, GB) address this."
+        ),
+    },
+    "learning_curve_linear_regression.png": {
+        "title": "Learning Curve — Linear Regression",
+        "interpretation": (
+            "Train and validation both plateau near R² ~0.63. More data does not help — the model is "
+            "too simple for housing's non-linear price patterns."
+        ),
+    },
+    "learning_curve_ridge_regression.png": {
+        "title": "Learning Curve — Ridge Regression",
+        "interpretation": (
+            "Same flat ~0.63 curves as Linear Regression. Regularization does not unlock new capacity "
+            "on this dataset."
+        ),
+    },
+    "learning_curve_lasso_regression.png": {
+        "title": "Learning Curve — Lasso Regression",
+        "interpretation": (
+            "Same ~0.63 plateau as other linear models. Feature count was not the bottleneck — "
+            "model form was."
+        ),
+    },
+    "learning_curve_svr.png": {
+        "title": "Learning Curve — SVR",
+        "interpretation": (
+            "Validation R² stays near or below zero at all training sizes. Default RBF SVR fails on "
+            "this feature space — needs tuning or a different algorithm."
+        ),
+    },
+    # --- Model Analysis: Residuals ---
+    "residuals_random_forest.png": {
+        "title": "Residual Analysis — Random Forest",
+        "interpretation": (
+            "Errors center near $0 (low bias). Slight funnel at high prices — expensive block groups "
+            "are harder to predict. Typical error ~$33k (MAE)."
+        ),
+    },
+    "residuals_gradient_boosting.png": {
+        "title": "Residual Analysis — Gradient Boosting",
+        "interpretation": (
+            "Similar shape to Random Forest but slightly wider spread. Some under-prediction at the "
+            "top of the price range ($400k+)."
+        ),
+    },
+    "residuals_decision_tree.png": {
+        "title": "Residual Analysis — Decision Tree",
+        "interpretation": (
+            "Wider error distribution than ensembles. More extreme residuals on outlier districts — "
+            "single-tree predictions are less stable."
+        ),
+    },
+    "residuals_linear_regression.png": {
+        "title": "Residual Analysis — Linear Regression",
+        "interpretation": (
+            "Broader cloud than tree models; systematic error in high-price coastal areas. Linear "
+            "weights cannot capture location × income interactions."
+        ),
+    },
+    "residuals_ridge_regression.png": {
+        "title": "Residual Analysis — Ridge Regression",
+        "interpretation": (
+            "Nearly identical spread to Linear Regression. Regularization did not reduce systematic "
+            "bias in expensive districts."
+        ),
+    },
+    "residuals_lasso_regression.png": {
+        "title": "Residual Analysis — Lasso Regression",
+        "interpretation": (
+            "Same broad residual pattern as Linear/Ridge. Under-predicts expensive coastal blocks, "
+            "over-predicts some cheaper inland areas."
+        ),
+    },
+    "residuals_svr.png": {
+        "title": "Residual Analysis — SVR",
+        "interpretation": (
+            "Large, skewed errors with no stable center at zero. Worse than predicting the average "
+            "price — confirms SVR should not be deployed."
+        ),
+    },
+    # --- Model Analysis: Predicted vs Actual ---
+    "pred_vs_actual_random_forest.png": {
+        "title": "Predicted vs Actual — Random Forest",
+        "interpretation": (
+            "Tightest cluster around the diagonal (R² 0.806). Best overall fit; most points within "
+            "the ~$50k RMSE band."
+        ),
+    },
+    "pred_vs_actual_gradient_boosting.png": {
+        "title": "Predicted vs Actual — Gradient Boosting",
+        "interpretation": (
+            "Good alignment (R² 0.774) but more scatter than Random Forest at high actual values — "
+            "expensive districts are slightly harder for this model."
+        ),
+    },
+    "pred_vs_actual_decision_tree.png": {
+        "title": "Predicted vs Actual — Decision Tree",
+        "interpretation": (
+            "Moderate fit (R² 0.653). Visible compression — extreme prices pulled toward the mean "
+            "because one tree cannot smooth across regions as well as an ensemble."
+        ),
+    },
+    "pred_vs_actual_linear_regression.png": {
+        "title": "Predicted vs Actual — Linear Regression",
+        "interpretation": (
+            "Points spread far from the diagonal (R² 0.627). Under-predicts expensive districts, "
+            "over-predicts some cheaper inland blocks."
+        ),
+    },
+    "pred_vs_actual_ridge_regression.png": {
+        "title": "Predicted vs Actual — Ridge Regression",
+        "interpretation": (
+            "Nearly identical scatter to Linear Regression (R² 0.627). Shrinking coefficients "
+            "did not improve point-level accuracy."
+        ),
+    },
+    "pred_vs_actual_lasso_regression.png": {
+        "title": "Predicted vs Actual — Lasso Regression",
+        "interpretation": (
+            "Same wide spread as other linear models (R² 0.627). Feature selection did not close "
+            "the gap to tree-based performers."
+        ),
+    },
+    "pred_vs_actual_svr.png": {
+        "title": "Predicted vs Actual — SVR",
+        "interpretation": (
+            "Wide scatter with poor diagonal alignment (R² −0.04). Predictions barely track actual "
+            "prices — worst performer on the hold-out test set."
+        ),
+    },
 }
 
 CHART_PREFIX_META = {

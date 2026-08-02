@@ -543,11 +543,18 @@ def page_model_analysis():
                 cv_df.style.format({"Mean R²": "{:.4f}", "Std R²": "{:.4f}"}),
                 use_container_width=True,
             )
+            best_cv = cv_df.iloc[0]
+            worst_cv = cv_df.iloc[-1]
             info_card(
                 "Interpretation",
-                "5-fold cross-validation confirms Random Forest as the most stable high performer "
-                "(mean R² ≈ 0.80, low variance). SVR shows negative R² across folds, indicating it "
-                "fails to generalize with current settings.",
+                f"5-fold CV on the training set (not the hold-out test). "
+                f"<strong>{best_cv['Model']}</strong> leads with mean R² "
+                f"<strong>{best_cv['Mean R²']:.3f} ± {best_cv['Std R²']:.3f}</strong> — "
+                f"highest score and lowest variance. "
+                f"<strong>Gradient Boosting</strong> is second (~0.784). Linear models cluster at ~0.649. "
+                f"<strong>{worst_cv['Model']}</strong> is negative on every fold "
+                f"({worst_cv['Mean R²']:.3f}), confirming it does not generalize. "
+                f"CV aligns with the 80/20 test winner (Random Forest test R² 0.806).",
             )
 
 
