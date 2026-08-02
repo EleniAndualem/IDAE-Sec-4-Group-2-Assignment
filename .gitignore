@@ -24,8 +24,6 @@ ENV/
 .DS_Store
 Thumbs.db
 
-# Trained model artifacts (regenerate with: python -m src.evaluate)
-models/*.pkl
 
 # Python packaging
 *.egg-info/
