@@ -1,102 +1,132 @@
 # California Housing Price Prediction
 
-This is an end-to-end Machine Learning project to predict the median house value for California districts based on 1990 census data. 
+End-to-end ML project to predict median house values for California districts using 1990 census data.
 
 ## Problem Statement
 
-The goal of this project is to build a regression model that accurately predicts the `median_house_value` for a given block group in California. This requires handling missing data, engineering meaningful features (like age categories and value per room), and comparing multiple regression algorithms to find the optimal balance of accuracy and computational efficiency.
+Build a regression model that predicts `median_house_value` for a California block group. The pipeline handles missing data, engineers features (`houseAgeLabel`, `valuePerRoom`), compares 7 regression algorithms, and selects the best model using a composite score (not R² alone).
 
 ## Dataset Description
 
-The project uses the **California Housing Prices** dataset. Each row represents one block group (a district) in California. 
+**California Housing Prices** — each row is one block group.
 
-Key features include:
-* **Location:** `longitude`, `latitude`, `ocean_proximity`
-* **Housing Details:** `housing_median_age`, `total_rooms`, `total_bedrooms`
-* **Demographics:** `population`, `households`, `median_income`
-* **Target Variable:** `median_house_value`
+| Category | Features |
+|----------|----------|
+| Location | `longitude`, `latitude`, `ocean_proximity` |
+| Housing | `housing_median_age`, `total_rooms`, `total_bedrooms` |
+| Demographics | `population`, `households`, `median_income` |
+| Target | `median_house_value` |
+
+- **Rows:** 20,640
+- **File:** `data/California Housing Prices.csv`
 
 ## Project Structure
 
 ```text
-├── app/                  # Streamlit application for the interactive UI
-├── data/                 # Raw and processed datasets
-├── models/               # Saved machine learning models (e.g., best_model.pkl)
-├── notebooks/            # Jupyter notebooks for Exploratory Data Analysis (EDA)
-├── outputs/              # Generated assets
-│   ├── figures/          # Plots for EDA, feature importance, and model evaluation
-│   ├── metrics/          # CSV/JSON files with evaluation scores (e.g. cross_validation.json)
-│   └── reports/          # Markdown reports (e.g. model_comparison.md)
-├── src/                  # Source code for the ML pipeline
-│   ├── evaluate.py       # Model evaluation, comparison, and leaderboard generation
-│   ├── feature_engineering.py # Logic for deriving new features
-│   ├── preprocessing.py  # Data cleaning, imputation, and scaling
-│   ├── train.py          # Training orchestrator for all models
-│   ├── utils.py          # Utility functions for I/O and setup
-│   └── visualization.py  # Code for generating plots
-├── tests/                # Unit tests
-├── requirements.txt      # Python dependencies
-└── README.md             # Project documentation (this file)
+├── app/                      # Streamlit UI
+│   └── app.py
+├── data/                     # Raw dataset
+├── models/                   # best_model.pkl, feature_info.json
+├── notebooks/eda.ipynb       # Interactive EDA
+├── outputs/
+│   ├── figures/              # EDA and evaluation plots
+│   ├── metrics/              # comparison.csv, cross_validation.json
+│   └── reports/              # Markdown reports
+├── src/
+│   ├── utils.py              # Paths, loading, inspection reports
+│   ├── preprocessing.py      # Cleaning, encoding, scaling
+│   ├── feature_engineering.py
+│   ├── train.py              # Train all 7 models
+│   ├── evaluate.py           # Metrics, CV, model selection
+│   ├── predict.py            # Load model and predict
+│   └── visualization.py      # All plots
+├── tests/                    # Unit tests
+├── requirements.txt
+└── README.md
 ```
 
 ## Installation
 
-1. **Clone the repository and navigate to the project directory:**
-   ```bash
-   cd IDAE-Sec-4-Group-2-Assignment
-   ```
+```bash
+git clone git@github.com:EleniAndualem/IDAE-Sec-4-Group-2-Assignment.git
+cd IDAE-Sec-4-Group-2-Assignment
+python -m venv .venv
+```
 
-2. **Create and activate a virtual environment:**
-   ```bash
-   python -m venv .venv
-   source .venv/bin/activate  # On Windows use: .venv\Scripts\activate
-   ```
+**Windows:**
+```powershell
+.\.venv\Scripts\Activate.ps1
+pip install -r requirements.txt
+```
 
-3. **Install the dependencies:**
-   ```bash
-   pip install -r requirements.txt
-   ```
+**Linux/macOS:**
+```bash
+source .venv/bin/activate
+pip install -r requirements.txt
+```
 
 ## Usage Commands
 
-Run the following commands from the root of the project (`IDAE-Sec-4-Group-2-Assignment/`).
+Run from project root:
 
-**1. Train and Evaluate Models:**
-To run the entire pipeline (cleaning, feature engineering, training, and evaluation), run:
 ```bash
-python -m src.evaluate
-```
-*(This will generate the best model in `models/best_model.pkl` and save all evaluation charts to `outputs/figures/evaluation/`)*
+# Train all models
+PYTHONPATH=. python -m src.train
 
-**2. Run the Streamlit App:**
-To launch the interactive web interface where you can explore the data and make predictions:
-```bash
-streamlit run app/app.py
-```
+# Full evaluation pipeline (train + metrics + save best model)
+PYTHONPATH=. python -m src.evaluate
 
-**3. Run Unit Tests:**
-To verify that the project is working properly:
-```bash
+# Make a single prediction
+PYTHONPATH=. python -m src.predict
+
+# Run unit tests
 PYTHONPATH=. pytest tests/ -v
+
+# Launch Streamlit app
+streamlit run app/app.py
 ```
 
 ## Model Comparison Results
 
-Seven different regression models were trained and evaluated: Linear Regression, Ridge, Lasso, Decision Tree, Random Forest, Gradient Boosting, and SVR.
+Best model: **Random Forest** (composite score: RMSE + MAE + R² + training time).
 
-The **Random Forest** model achieved the best balance of accuracy and training efficiency, emerging as the top performer on the leaderboard.
+| Rank | Model | RMSE | MAE | R² | Train (s) | Predict (s) |
+|------|-------|------|-----|----|-----------|-------------|
+| 1 | Random Forest | $50,476 | $32,960 | 0.8056 | 0.371 | 0.016 |
+| 2 | Gradient Boosting | $54,410 | $37,051 | 0.7741 | 1.983 | 0.007 |
+| 3 | Decision Tree | $67,437 | $42,981 | 0.6530 | 0.206 | 0.003 |
+| 4 | Linear Regression | $69,944 | $50,498 | 0.6267 | 0.021 | 0.003 |
+| 5 | Lasso Regression | $69,944 | $50,498 | 0.6267 | 0.209 | 0.003 |
+| 6 | Ridge Regression | $69,951 | $50,504 | 0.6266 | 0.019 | 0.003 |
+| 7 | SVR | $116,845 | $86,969 | -0.0419 | 5.558 | 2.166 |
 
-| Rank | Model | RMSE | MAE | R² | Train Time (s) | Predict Time (s) |
-|------|-------|------|-----|----|----------------|------------------|
-| 1 | Random Forest ⭐ | $50,476 | $32,960 | 0.8056 | 0.371 | 0.0162 |
-| 2 | Gradient Boosting | $54,410 | $37,051 | 0.7741 | 1.983 | 0.0071 |
-| 3 | Decision Tree | $67,437 | $42,981 | 0.6530 | 0.206 | 0.0032 |
+Full report: `outputs/reports/model_comparison.md`
 
-*(Full details can be found in `outputs/reports/model_comparison.md`)*
+## Screenshots
 
-## Outputs & Screenshots
+**House value distribution (EDA):**
 
-All generated visualizations are automatically saved in the `outputs/figures/` directory, including:
-* **EDA Plots:** Pairplots, correlation heatmaps, and price distributions.
-* **Evaluation Plots:** Actual vs. Predicted scatter plots, learning curves, and residual plots for every model.
-* **Feature Importance:** Bar charts showing which features (e.g., median income) had the highest impact on the predictions.
+![House Value Distribution](outputs/figures/house_value_distribution.png)
+
+**Model RMSE comparison:**
+
+![Model Comparison RMSE](outputs/figures/evaluation/model_comparison_rmse.png)
+
+**Model leaderboard:**
+
+![Model Leaderboard](outputs/figures/evaluation/model_leaderboard.png)
+
+**Random Forest feature importance:**
+
+![Feature Importance](outputs/figures/evaluation/feature_importance_random_forest.png)
+
+**Predicted vs actual (Random Forest):**
+
+![Predicted vs Actual](outputs/figures/evaluation/pred_vs_actual_random_forest.png)
+
+**Streamlit app — run `streamlit run app/app.py` to interact with:**
+- Home overview and key metrics
+- Dataset explorer
+- EDA figures
+- Model comparison
+- Live price prediction form
