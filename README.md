@@ -8,9 +8,11 @@ End-to-end regression pipeline that predicts median house values for California 
 |---|---|
 | **Live App** | [california-housing-price-predictor-group2.streamlit.app](https://california-housing-price-predictor-group2.streamlit.app/) |
 | **Technical Report** | [Technical_Report_Group2.pdf](https://drive.google.com/file/d/1Ti8QqplCqqDtdNZijvrSNjBPO6Glw4gs/view?usp=sharing) |
-| **Best Model** | Random Forest — RMSE $50,476 · MAE $32,960 · R² 0.806 |
 
-**Team:** Eleni Andualem · Elias Berhanu · Selam Elias
+**Team**
+- Eleni Andualem
+- Elias Berhanu
+- Selam Elias
 
 ---
 
@@ -22,34 +24,31 @@ This project builds a supervised regression system that estimates `median_house_
 
 **Source:** `data/California Housing Prices.csv` (1990 US Census)
 
+<table>
+<tr>
+<td valign="top" width="50%">
+
 | | |
 |---|---|
-| Records | 20,640 block groups |
-| Features | 9 inputs + 1 target |
-| Missing values | 207 in `total_bedrooms` (imputed) |
+| **Records** | 20,640 block groups |
+| **Features** | 9 inputs + 1 target |
+| **Missing values** | 207 in `total_bedrooms` (imputed) |
 
-| Category | Columns |
-|----------|---------|
+</td>
+<td valign="top" width="50%">
+
+| **Category** | **Columns** |
+|---|---|
 | Location | `longitude`, `latitude`, `ocean_proximity` |
 | Housing | `housing_median_age`, `total_rooms`, `total_bedrooms` |
 | Demographics | `population`, `households`, `median_income` |
 | Target | `median_house_value` |
 
+</td>
+</tr>
+</table>
+
 **Engineered features:** `houseAgeLabel`, `valuePerRoom`
-
-## Model Results
-
-| Rank | Model | RMSE | MAE | R² |
-|------|-------|------|-----|-----|
-| 1 | **Random Forest** | $50,476 | $32,960 | 0.806 |
-| 2 | Gradient Boosting | $54,380 | $37,041 | 0.774 |
-| 3 | Decision Tree | $67,437 | $42,981 | 0.653 |
-| 4 | Linear Regression | $69,944 | $50,498 | 0.627 |
-| 5 | Lasso Regression | $69,944 | $50,498 | 0.627 |
-| 6 | Ridge Regression | $69,951 | $50,504 | 0.627 |
-| 7 | SVR | $116,845 | $86,969 | −0.042 |
-
-Full metrics: `outputs/metrics/comparison.csv` · Report: `outputs/reports/model_comparison.md`
 
 ## Project Structure
 
@@ -142,8 +141,8 @@ Six pages: **Home** · **Predict** · **Model Comparison** · **EDA** · **Model
 ## Documentation
 
 - [Technical Report (PDF)](https://drive.google.com/file/d/1Ti8QqplCqqDtdNZijvrSNjBPO6Glw4gs/view?usp=sharing)
-- `outputs/reports/data_understanding.md`
-- `outputs/reports/model_comparison.md`
+- [Data Understanding Report](https://github.com/EleniAndualem/IDAE-Sec-4-Group-2-Assignment/blob/main/outputs/reports/data_understanding.md)
+- [Model Comparison Report](https://github.com/EleniAndualem/IDAE-Sec-4-Group-2-Assignment/blob/main/outputs/reports/model_comparison.md)
 
 ## Tech Stack
 

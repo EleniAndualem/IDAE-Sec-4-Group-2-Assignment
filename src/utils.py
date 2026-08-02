@@ -74,14 +74,21 @@ def build_report_markdown(inspection: dict, stats: dict) -> str:
         lines.append(f"| {col} | {dtype} | {missing} |")
 
     lines.extend(["", "## Numeric Statistics", ""])
-    for col, values in stats["numeric"].items():
-        lines.append(f"### {col}")
-        lines.append("")
-        lines.append("| Stat | Value |")
-        lines.append("|------|-------|")
-        for stat_name, value in values.items():
-            formatted = f"{value:,.4f}" if isinstance(value, float) else value
-            lines.append(f"| {stat_name} | {formatted} |")
+    numeric = stats["numeric"]
+    if numeric:
+        columns = list(numeric.keys())
+        stat_names = list(next(iter(numeric.values())).keys())
+        header = "| Stat | " + " | ".join(columns) + " |"
+        sep = "|------|" + "|".join(["---"] * len(columns)) + "|"
+        lines.append(header)
+        lines.append(sep)
+        for stat_name in stat_names:
+            row_vals = []
+            for col in columns:
+                value = numeric[col][stat_name]
+                formatted = f"{value:,.4f}" if isinstance(value, float) else value
+                row_vals.append(str(formatted))
+            lines.append(f"| {stat_name} | " + " | ".join(row_vals) + " |")
         lines.append("")
 
     lines.append("## Categorical Statistics")
