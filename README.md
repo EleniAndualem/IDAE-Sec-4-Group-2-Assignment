@@ -8,6 +8,7 @@ End-to-end regression pipeline that predicts median house values for California 
 |---|---|
 | **Live App** | [california-housing-price-predictor-group2.streamlit.app](https://california-housing-price-predictor-group2.streamlit.app/) |
 | **Technical Report** | [Technical_Report_Group2.pdf](https://drive.google.com/file/d/1Ti8QqplCqqDtdNZijvrSNjBPO6Glw4gs/view?usp=sharing) |
+| **Presentation ppt** | [presentation_group2.ppt](https://docs.google.com/presentation/d/1gXuZF4AlXU3HCI8u2fDgxfMyt79r01b9/edit?usp=sharing&ouid=113601872599689568316&rtpof=true&sd=true)|
 
 **Team**
 - Eleni Andualem
